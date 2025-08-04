@@ -18,32 +18,7 @@ public class BallController : MonoBehaviour
 
     private SpriteRenderer sr;
 
-    private bool isDoubleScoreActive = false;
 
-public void ActivatePotion(PotionType type)
-{
-    Debug.Log("Activated Potion: " + type);
-
-    switch (type)
-        {
-            case PotionType.DoubleScore:
-                StartCoroutine(DoubleScoreEffect());
-                break;
-            case PotionType.AddLife:
-                gameManager.AddLife(1);
-                break;
-            case PotionType.SlowTimer:
-                gameManager.SlowDownTimer(0.5f, 5f);
-                break;
-        }
-}
-
-IEnumerator DoubleScoreEffect()
-{
-    isDoubleScoreActive = true;
-    yield return new WaitForSeconds(6f);
-    isDoubleScoreActive = false;
-}
 
 
     void Start()
@@ -90,8 +65,8 @@ IEnumerator DoubleScoreEffect()
         isDragging = true;
         rb.gravityScale = 0;
         rb.velocity = Vector2.zero;
-int scoreToAdd = isDoubleScoreActive ? 2 : 1;
-    gameManager.AddScore(scoreToAdd);        hasHitGround = false;
+        gameManager.AddScore(1);
+        hasHitGround = false;
     }
 
     void OnMouseDrag()
@@ -128,8 +103,7 @@ int scoreToAdd = isDoubleScoreActive ? 2 : 1;
                         isDragging = true;
                         rb.gravityScale = 0;
                         rb.velocity = Vector2.zero;
-                        int scoreToAdd = isDoubleScoreActive ? 2 : 1;
-                        gameManager.AddScore(scoreToAdd);
+                        gameManager.AddScore(1);
                         hasHitGround = false;
                     }
                     break;

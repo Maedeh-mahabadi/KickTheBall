@@ -2,41 +2,29 @@ using UnityEngine;
 
 public class Potion : MonoBehaviour
 {
-    public enum PotionType { Health, Score }
+    public enum PotionType { AddLife, DoubleScore }
     public PotionType type;
-    
-        public GameManager gameManager; // Assign in Inspector
+
+    public GameManager gameManager;
 
     private void OnTriggerEnter2D(Collider2D other)
-{
-    if (other.CompareTag("Ball"))
     {
-        if (gameManager == null)
+        if (other.CompareTag("Ball"))
         {
-            Debug.LogError("Potion: GameManager is not assigned!");
-            return;
-        }
+            if (gameManager == null) return;
 
-        gameManager.AddLife(1);
-        gameManager.ActivateDoubleScore(7f); // 7 seconds
-        Destroy(gameObject); // Remove potion after pickup
-    }
-}
+            switch (type)
+            {
+                case PotionType.AddLife:
+                    gameManager.AddLife(1);
+                    break;
+                case PotionType.DoubleScore:
+                    Debug.Log("Potion triggered: Double Score");
+                    gameManager.ActivateDoubleScore(6f);
+                    break;
+            }
 
-    
-
-    void ApplyEffect()
-    {
-        switch (type)
-        {
-            case PotionType.Health:
-                Debug.Log("Health increased!");
-                // Call your health manager here
-                break;
-            case PotionType.Score:
-                Debug.Log("Score increased!");
-                // Add to score here
-                break;
+            Destroy(gameObject);
         }
     }
 }
