@@ -107,7 +107,7 @@ int scoreToAdd = isDoubleScoreActive ? 2 : 1;
     void OnMouseUp()
     {
         isDragging = false;
-        rb.gravityScale = 50;
+        rb.gravityScale = 20;
         rb.AddForce(new Vector2(0, 500));
     }
 
