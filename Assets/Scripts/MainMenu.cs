@@ -6,8 +6,16 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
 
+public AudioClip menuMusic;
 
-      public void OnStartButton() {
+void Start()
+{
+    SoundManager.Instance.PlayMusic(menuMusic);
+}
+
+
+    public void OnStartButton()
+    {
         SceneManager.LoadScene("SampleScene"); // Loads your gameplay scene
     }
     public void OnShopButton() {
