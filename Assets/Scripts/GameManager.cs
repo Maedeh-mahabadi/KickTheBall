@@ -2,9 +2,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using Bazaar.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Bazaar.Poolakey;
+using Bazaar.Poolakey.Data;
+
 
 public class GameManager : MonoBehaviour
 {
+    public Text feedbackText;
+
     public int lives = 3;
     public int score = 0;
     public Text livesText;
@@ -32,7 +40,11 @@ public class GameManager : MonoBehaviour
         bool connected = await purchaseManager.init();
         if (!connected)
         {
-            Debug.LogError("Poolakey connection failed.");
+            Debug.LogError("❌ Poolakey connection failed.");
+        }
+        else
+        {
+            Debug.Log("✅ Poolakey connected successfully.");
         }
     }
 
@@ -90,6 +102,19 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    public void ResumeGameIfPossible()
+    {
+        if (Time.timeScale == 0f && lives > 0)
+        {
+            Time.timeScale = 1f;
+            gameOverPanel.SetActive(false);
+            inGameMenuButton.interactable = true;
+            UpdateUI();
+            Debug.Log("Game resumed with score: " + score);
+        }
+    }
+
+
     public void AddLife(int amount)
     {
         lives += amount;
@@ -132,29 +157,61 @@ public class GameManager : MonoBehaviour
     // 👇 NEW METHOD: Buy lives using Poolakey
     public async void OnBuyLivesClicked()
     {
+        Debug.Log("🛒 Buy Lives button clicked");
+
         if (purchaseManager == null)
         {
-            Debug.LogError("PurchaseManager not assigned.");
+            Debug.LogError("❌ PurchaseManager is not assigned.");
+            ShowFeedback("❌ PurchaseManager is not assigned.");
             return;
         }
 
+        Debug.Log("🔄 Starting purchase for product: " + productId);
+
         var purchaseResult = await purchaseManager.Purchase(productId);
+        Debug.Log($"📦 Purchase result: Status = {purchaseResult.status}, Message = {purchaseResult.message}");
+
         if (purchaseResult.status != Bazaar.Data.Status.Success)
         {
-            Debug.LogWarning("Purchase failed: " + purchaseResult.message);
+            Debug.LogWarning("⚠️ Purchase failed: " + purchaseResult.message);
+            ShowFeedback("⚠️ Purchase failed: " + purchaseResult.message);
             return;
         }
 
         var token = purchaseResult.data.purchaseToken;
+        Debug.Log("✅ Purchase successful. Token: " + token);
+
         var consumeResult = await purchaseManager.Consume(token);
+        Debug.Log($"🧹 Consume result: Status = {consumeResult.status}, Message = {consumeResult.message}");
+
         if (consumeResult.status != Bazaar.Data.Status.Success)
         {
-            Debug.LogWarning("Consume failed: " + consumeResult.message);
+            Debug.LogWarning("⚠️ Consume failed: " + consumeResult.message);
+            ShowFeedback("⚠️ Consume failed: " + consumeResult.message);
             return;
         }
 
         score = savedScore;
-        AddLife(3); // 👈 Grant 3 lives
-        Debug.Log("Purchase successful and consumed. 3 lives added.");
+        AddLife(3);
+        ResumeGameIfPossible();
+        Debug.Log("🎉 Lives added and game resumed.");
+        ShowFeedback("✅ Purchase successful! 3 lives added.");
     }
+
+
+
+
+    void ShowFeedback(string message)
+    {
+        feedbackText.text = message;
+        feedbackText.gameObject.SetActive(true);
+        StartCoroutine(HideFeedbackAfterSeconds(3f));
+    }
+
+    IEnumerator HideFeedbackAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        feedbackText.gameObject.SetActive(false);
+    }
+
 }

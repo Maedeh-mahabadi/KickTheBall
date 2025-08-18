@@ -6,22 +6,25 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
 
-public AudioClip menuMusic;
+    public AudioClip menuMusic;
 
-void Start()
-{
-    SoundManager.Instance.PlayMusic(menuMusic);
-}
+    void Start()
+    {
+        SoundManager.Instance.PlayMusic(menuMusic);
+    }
 
 
     public void OnStartButton()
     {
         SceneManager.LoadScene("SampleScene"); // Loads your gameplay scene
     }
+    
     public void OnShopButton() {
-        // Shop logic will be added later
+        SceneManager.LoadScene("Store");
     }
+
     public void OnExitButton() {
         Application.Quit();
     }
+     
 }

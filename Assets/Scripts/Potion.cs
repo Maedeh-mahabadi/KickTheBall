@@ -1,4 +1,8 @@
 using UnityEngine;
+using Bazaar.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 
 public class Potion : MonoBehaviour
 {

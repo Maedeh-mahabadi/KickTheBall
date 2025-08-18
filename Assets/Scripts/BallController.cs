@@ -18,6 +18,9 @@ public class BallController : MonoBehaviour
 
     private SpriteRenderer sr;
 
+    public Sprite[] ballSprites; // Set size to 3 in Inspector
+
+
 
 
 
@@ -27,16 +30,33 @@ public class BallController : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         cam = Camera.main;
         sr = GetComponent<SpriteRenderer>();
+        
+       int selectedBall = PlayerPrefs.GetInt("SelectedBall", -1);
+
+if (selectedBall >= 0 && selectedBall < ballSprites.Length)
+{
+    sr.sprite = ballSprites[selectedBall];
+}
+else
+{
+    UpdateBallSprite(); // fallback to score-based logic
+}
+
     }
 
     void Update()
-    {
-        #if UNITY_ANDROID
-        HandleTouchInput();
-        #endif
+{
+    #if UNITY_ANDROID
+    HandleTouchInput();
+    #endif
 
-        UpdateBallSprite();
+    int selectedBall = PlayerPrefs.GetInt("SelectedBall", -1);
+    if (selectedBall == -1)
+    {
+        UpdateBallSprite(); // Only update if no manual selection
     }
+}
+
 
     void UpdateBallSprite()
     {
