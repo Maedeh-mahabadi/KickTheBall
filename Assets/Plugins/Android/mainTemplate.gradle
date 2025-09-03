@@ -1,11 +1,25 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
+    }
+}
 
 
 **APPLY_PLUGINS**
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-**DEPS**}
+**DEPS**
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
+}
 
 android {
     namespace "com.unity3d.player"

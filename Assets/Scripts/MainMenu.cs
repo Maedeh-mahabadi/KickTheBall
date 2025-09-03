@@ -16,7 +16,7 @@ public class MainMenu : MonoBehaviour
 
     public void OnStartButton()
     {
-        SceneManager.LoadScene("SampleScene"); // Loads your gameplay scene
+        SceneManager.LoadScene("SampleScene"); // Loads gameplay scene
     }
     
     public void OnShopButton() {

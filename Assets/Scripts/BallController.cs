@@ -35,8 +35,15 @@ public class BallController : MonoBehaviour
 
 if (selectedBall >= 0 && selectedBall < ballSprites.Length)
 {
-    sr.sprite = ballSprites[selectedBall];
-}
+// Check if trying to use locked third ball
+        if (selectedBall == 2 && PlayerPrefs.GetInt("ThirdBallUnlocked", 0) != 1)
+        {
+            UpdateBallSprite(); // Use default ball if third ball is locked
+        }
+        else
+        {
+            sr.sprite = ballSprites[selectedBall];
+        }}
 else
 {
     UpdateBallSprite(); // fallback to score-based logic
